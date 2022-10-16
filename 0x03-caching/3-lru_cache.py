@@ -18,7 +18,7 @@ class LRUCache(BaseCaching):
             self.cache_data[key] = item
             self.cache_data.move_to_end(key)
         if len(self.cache_data) > super().MAX_ITEMS:
-            print('DISCARD: {}'.format(self.cache_data.popitem(last = False)[0]))
+            print('DISCARD: {}'.format(self.cache_data.popitem(last=False)[0]))
 
     def get(self, key):
         '''Class get method: Gets an item from the dict'''
