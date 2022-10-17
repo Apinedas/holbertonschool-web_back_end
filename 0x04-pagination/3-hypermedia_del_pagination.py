@@ -43,13 +43,17 @@ class Server:
         '''Returns a dictionary with index, next index, page_size and data'''
         assert isinstance(index, int)
         assert index <= list(self.__indexed_dataset.keys())[-1]
-        aux_iterator = iter(self.__indexed_dataset.values())
-        for _ in range(0, index):
-            next(aux_iterator)
-        data = [next(aux_iterator) for _ in range(page_size)]
-        aux_iterator = iter(self.__indexed_dataset.keys())
-        for _ in range(0, (index * page_size)):
-            next_index = next(aux_iterator)
+        data = []
+        next_index = index + page_size
+        upper_limit = page_size + index
+        i = index
+        while i < upper_limit:
+            try:
+                data.append(self.__indexed_dataset[i])
+            except:
+                upper_limit += 1
+                next_index += 1
+            i += 1
         ret_dict = {
             'index': index,
             'next_index': next_index,
