@@ -50,7 +50,7 @@ class Server:
         while i < upper_limit:
             try:
                 data.append(self.__indexed_dataset[i])
-            except:
+            except Exception:
                 upper_limit += 1
                 next_index += 1
             i += 1
