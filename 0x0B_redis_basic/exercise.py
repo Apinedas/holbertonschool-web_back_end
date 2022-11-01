@@ -9,14 +9,26 @@ import uuid
 
 def count_calls(method: Callable) -> Callable:
     """Calls counter for Cache methods"""
-    key = method.__qualname__
     @wraps(method)
     def wrapper(self, *args):
         """Wrapped function"""
+        key = method.__qualname__
         self._redis.incr(key)
         return method(self, *args)
     return wrapper
 
+def call_history(method: Callable) -> Callable:
+    """Call logger for Cache methods"""
+    @wraps(method)
+    def wrapper(self, *args):
+        """Wrapped function"""
+        input_key = "{:s}:inputs".format(method.__qualname__)
+        output_key = "{:s}:outputs".format(method.__qualname__)
+        output = method(self, *args)
+        self._redis.rpush(input_key, str(args))
+        self._redis.rpush(output_key, output)
+        return output
+    return wrapper
 
 class Cache():
     """Cache class using redis"""
@@ -26,6 +38,7 @@ class Cache():
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Stores data to a random key"""
         key = str(uuid.uuid4())
