@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
 """Redis excercise file"""
 
+from functools import wraps
 import redis
 from typing import Callable, Optional, Union
 import uuid
+
+
+def count_calls(method: Callable) -> Callable:
+    """Calls counter for Cache methods"""
+    key = method.__qualname__
+    @wraps(method)
+    def wrapper(self, *args):
+        """Wrapped function"""
+        self._redis.incr(key)
+        return method(self, *args)
+    return wrapper
 
 
 class Cache():
@@ -13,10 +25,11 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Stores data to a random key"""
         key = str(uuid.uuid4())
-        self._redis.mset({key: data})
+        self._redis.set(key, data)
         return key
 
     def get(self, key: str, fn: Optional[Callable] = None):
