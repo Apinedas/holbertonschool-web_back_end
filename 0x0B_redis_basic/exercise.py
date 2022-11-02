@@ -30,6 +30,22 @@ def call_history(method: Callable) -> Callable:
         return output
     return wrapper
 
+def replay(method: Callable) -> None:
+    """Statistics method for Cache methods"""
+    redis_engine = redis.Redis()
+    qname = method.__qualname__
+    input_key = "{:s}:inputs".format(qname)
+    output_key = "{:s}:outputs".format(qname)
+    input_list = redis_engine.lrange(input_key, 0, -1)
+    output_list = redis_engine.lrange(output_key, 0, -1)
+    print("{} was called {} times:".format(qname, int(redis_engine.get(qname))))
+    for input_, output_ in zip(input_list, output_list):
+        if input_:
+            input_ = input_.decode('utf-8')
+        if output_:
+            output_ = output_.decode('utf-8')
+        print("{}(*{}) -> {}".format(qname, input_, output_))
+
 class Cache():
     """Cache class using redis"""
 
