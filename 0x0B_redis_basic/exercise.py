@@ -17,6 +17,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """Call logger for Cache methods"""
     @wraps(method)
@@ -30,6 +31,7 @@ def call_history(method: Callable) -> Callable:
         return output
     return wrapper
 
+
 def replay(method: Callable) -> None:
     """Statistics method for Cache methods"""
     redis_engine = redis.Redis()
@@ -38,13 +40,14 @@ def replay(method: Callable) -> None:
     output_key = "{:s}:outputs".format(qname)
     input_list = redis_engine.lrange(input_key, 0, -1)
     output_list = redis_engine.lrange(output_key, 0, -1)
-    print("{} was called {} times:".format(qname, int(redis_engine.get(qname))))
+    print(f"{qname} was called {int(redis_engine.get(qname))} times:")
     for input_, output_ in zip(input_list, output_list):
         if input_:
             input_ = input_.decode('utf-8')
         if output_:
             output_ = output_.decode('utf-8')
         print("{}(*{}) -> {}".format(qname, input_, output_))
+
 
 class Cache():
     """Cache class using redis"""
