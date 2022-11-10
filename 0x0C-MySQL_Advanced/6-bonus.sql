@@ -1,3 +1,4 @@
+-- Stored procedure corrections
 DELIMITER $$
 
 CREATE PROCEDURE AddBonus (user_id int, project_name varchar(255), score int)
