@@ -3,5 +3,5 @@
 
 
 def list_all(mongo_collection):
-    """Inserts kwargs into collection"""
+    """Queries all documents in collection"""
     return mongo_collection.find()
