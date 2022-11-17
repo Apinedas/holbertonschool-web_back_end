@@ -26,7 +26,7 @@ export default async function handleProfileSignup(firstName, lastName, filename)
     .catch((error) => {
       retArr.push({
         status: 'rejected',
-        value: error,
+        value: `${error.name}: ${error.message}`,
       });
     });
   return retArr;
