@@ -1,31 +1,38 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 
-module.exports = async function countStudents(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, data) => {
-      if (err) {
-        reject(Error('Cannot load the database'));
-        return;
-      }
-      const lines = data.split('\n');
-      lines.splice(0, 1);
-      for (let i = lines.length - 1; i >= 0; i -= 1) {
-        if (lines[i].length === 0) lines.splice(i, 1);
-      }
-      const number = lines.length;
-      const obj = {};
-      for (const line of lines) {
-        const row = line.split(',');
-        if (!obj[row[3]]) obj[row[3]] = [];
-        obj[row[3]].push(row[0]);
-      }
-      if (number > 0) {
-        console.log(`Number of students: ${number}`);
-        for (const key of Object.keys(obj)) {
-          console.log(`Number of students in ${key}: ${obj[key].length}. List: ${obj[key].join(', ')}`);
+async function countStudents(path) {
+  try {
+    const data = await fs.readFile(path, 'utf8');
+    const linesArray = data.split('\n');
+    let numberOfStudents = 0;
+    const studentsByField = {};
+    linesArray.shift();
+    for (const line of linesArray) {
+      const splittedLine = line.split(',');
+      if (splittedLine.length === 4) {
+        numberOfStudents += 1;
+        if (splittedLine[3] in studentsByField) {
+          studentsByField[splittedLine[3]].push(splittedLine[0]);
+        } else {
+          studentsByField[splittedLine[3]] = [splittedLine[0]];
         }
       }
-      resolve(obj);
-    });
-  });
-};
+    }
+    console.log(`Number of students: ${numberOfStudents}`);
+    // eslint-disable-next-line guard-for-in
+    for (const field in studentsByField) {
+      let strList = '';
+      for (const student of studentsByField[field]) {
+        if (strList.length > 0) {
+          strList += ', ';
+        }
+        strList += student;
+      }
+      console.log(`Number of students in ${field}: ${studentsByField[field].length}. List: ${strList}`);
+    }
+  } catch (err) {
+    throw new Error('Cannot load the database');
+  }
+}
+
+module.exports = countStudents;
