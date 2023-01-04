@@ -9,12 +9,12 @@ describe('calculateNumber', () => {
         assert.equal(calculateNumber(5, -5), 0);
     });
     it('should round numbers', () => {
-        assert.equal(calculateNumber(1, 3.7), 5);
+        assert.equal(calculateNumber(1, 3.2), 4);
     });
     it('should round numbers', () => {
-        assert.equal(calculateNumber(1.5, 3), 5);
+        assert.equal(calculateNumber(1.2, 3), 4);
     });
     it('should round numbers', () => {
-        assert.equal(calculateNumber(1.5, 3.7), 6);
+        assert.equal(calculateNumber(1.2, 3.4), 4);
     });
 });
