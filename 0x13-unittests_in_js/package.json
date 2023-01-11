@@ -1,9 +1,13 @@
 {
   "dependencies": {
-    "eslint": "^8.31.0",
     "mocha": "^10.2.0"
   },
   "scripts": {
     "test": "mocha"
+  },
+  "devDependencies": {
+    "eslint": "^8.31.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
