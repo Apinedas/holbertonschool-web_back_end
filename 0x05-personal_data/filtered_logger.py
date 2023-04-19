@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 '''First filter data task'''
-import logging, re, os, mysql.connector
+import logging
+import re
+import os
+import mysql.connector
 from typing import List
 
 
 PII_FIELDS = ('name', 'phone', 'ssn', 'password', 'email')
+
 
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
@@ -49,13 +53,16 @@ def get_logger() -> logging.Logger:
 
     return logger
 
+
 def get_db() -> mysql.connector.connection.MySQLConnection:
     username = os.getenv('PERSONAL_DATA_DB_USERNAME') or 'root'
     password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ''
     host = os.getenv('PERSONAL_DATA_DB_HOST') or 'localhost'
     db = os.getenv('PERSONAL_DATA_DB_NAME')
 
-    conection = mysql.connector.connection.MySQLConnection(user=username, password=password,
-                                                           host=host, database=db)
-    
+    conection = mysql.connector.connection.MySQLConnection(user=username,
+                                                           password=password,
+                                                           host=host,
+                                                           database=db)
+
     return conection
