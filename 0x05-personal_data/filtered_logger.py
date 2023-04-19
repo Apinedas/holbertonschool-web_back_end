@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 '''First filter data task'''
-import logging
+import logging, re, os, mysql.connector
 from typing import List
-import re
 
+
+PII_FIELDS = ('name', 'phone', 'ssn', 'password', 'email')
 
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
@@ -30,7 +31,7 @@ class RedactingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         '''Format logging method'''
         newRecord = record.getMessage()
-        for obf in self.fields:
+        for _ in self.fields:
             newRecord = filter_datum(self.fields, self.REDACTION, newRecord,
                                      self.SEPARATOR)
         log_record = logging.LogRecord("my_logger", logging.INFO, None, None,
@@ -48,5 +49,13 @@ def get_logger() -> logging.Logger:
 
     return logger
 
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME') or 'root'
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ''
+    host = os.getenv('PERSONAL_DATA_DB_HOST') or 'localhost'
+    db = os.getenv('PERSONAL_DATA_DB_NAME')
 
-PII_FIELDS = ('name', 'phone', 'ssn', 'password', 'email')
+    conection = mysql.connector.connection.MySQLConnection(user=username, password=password,
+                                                           host=host, database=db)
+    
+    return conection
