@@ -71,6 +71,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 
 def main () -> None:
+    '''Main function to print the data stored on the DB formatted'''
     db_connection = get_db()
     logger = get_logger()
     cursor = db_connection.cursor()
