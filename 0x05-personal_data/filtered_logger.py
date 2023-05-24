@@ -49,7 +49,8 @@ def get_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.propagate = False
     handler = logging.StreamHandler()
-    logger.setFormatter(RedactingFormatter(PII_FIELDS))
+    handler.setFormatter(RedactingFormatter(list(PII_FIELDS)))
+    logger.addHandler(handler)
 
     return logger
 
@@ -67,3 +68,19 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
                                                            database=db)
 
     return conection
+
+
+def main () -> None:
+    db_connection = get_db()
+    logger = get_logger()
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * from users")
+
+    rows = cursor.fetchall()
+    column_names = [column[0] for column in cursor.description]
+    for row in rows:
+        user_info = '; '.join(f"{column_names[i]}={value}" for i, value in enumerate(row))
+        logger.info(user_info)
+
+if __name__ == "__main__":
+    main()
