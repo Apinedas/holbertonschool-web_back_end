@@ -5,4 +5,5 @@ from .auth import Auth
 
 
 class BasicAuth(Auth):
+    """Class Basic Auth"""
     pass
