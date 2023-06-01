@@ -37,7 +37,7 @@ class BasicAuth(Auth):
         return tuple(decoded_base64_authorization_header.split(":"))
 
     def user_object_from_credentials(self, user_email: str, user_pwd: str) ->\
-    TypeVar('User'):
+            TypeVar('User'):
         '''Get user object from credentials'''
         list_user_from_db = User.search({'email': user_email})
         if type(user_email) is not str or type(user_pwd) is not str or\
