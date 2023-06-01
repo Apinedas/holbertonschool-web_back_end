@@ -45,7 +45,7 @@ class BasicAuth(Auth):
                 list_user_from_db[0].is_valid_password(user_pwd):
             return None
         return list_user_from_db[0]
-    
+
     def current_user(self, request=None) -> TypeVar('User'):
         """Get current user"""
         auth_header = self.authorization_header(request)
