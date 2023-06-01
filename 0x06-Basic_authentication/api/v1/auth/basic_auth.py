@@ -27,6 +27,7 @@ class BasicAuth(Auth):
             return None
 
     def extract_user_credentials(self, decoded_base64_authorization_header):
+        '''Extracts user credentials from string'''
         if not decoded_base64_authorization_header or \
                 type(decoded_base64_authorization_header) is not str or\
                 ":" not in decoded_base64_authorization_header:
